@@ -1,12 +1,16 @@
 name: Example workflow using Snyk
 
-on: push
+on:
+  push:
+    branches:
+      - main  # or specify the branch you want to trigger on
 
 jobs:
-security:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v2
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
     
     - name: Install Snyk CLI
       run: npm install -g snyk
