@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
         val password = mBinding.edtPassword.text.toString()
 
         Log.d("userName", username)
+        
         Log.d("password", password)
 
 
