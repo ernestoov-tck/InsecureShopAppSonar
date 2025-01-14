@@ -1,6 +1,8 @@
 name: "Upload package.json SARIF"
-# Run workflow each time code is pushed to your repository.
-on: push
+on:
+  push:
+    branches:
+      - main  # or specify the branch you want to trigger on
 jobs: 
   build:   
     runs-on: ubuntu-latest   
