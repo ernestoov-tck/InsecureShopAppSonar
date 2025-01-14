@@ -9,4 +9,5 @@ data class ProductDetail(
     var url: String = "https://www.insecureshopapp.com",
     var qty: Int = 0
 
+
 )
