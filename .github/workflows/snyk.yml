@@ -18,6 +18,13 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
+    - name: Run Snyk for Gradle
+      uses: snyk/actions/gradle-jdk11@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --sarif-file-output=snyk.sarif
+
     - name: Grant execute permission for gadlew
       run: chmod +x ./gradlew
       
