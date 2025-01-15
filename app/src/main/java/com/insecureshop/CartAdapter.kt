@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.insecureshop.databinding.CartItemBinding
 
 class CartAdapter : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
+    
 
     var cartList : List<ProductDetail> = arrayListOf()
 
