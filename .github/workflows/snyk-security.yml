@@ -8,11 +8,12 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/gradle-jdk17@master
+        uses: snyk/actions/gradle@v3
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --sarif-file-output=./snyk.sarif
+          java-version: 11
       - name: List files in the workspace
         run: ls -la
       - name: Upload result to GitHub Code Scanning
