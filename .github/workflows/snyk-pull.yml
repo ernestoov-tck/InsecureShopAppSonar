@@ -25,11 +25,13 @@ jobs:
       run: npm install -g snyk
   
     - name: Run Snyk Open Source Test
+      continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk test --all-projects --json > snyk-deps.json
 
     - name: Run Snyk Code Test
+      continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk code test --json > snyk-code.json
@@ -50,6 +52,3 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           $(cat snyk-comment.md)
-
-
-    
