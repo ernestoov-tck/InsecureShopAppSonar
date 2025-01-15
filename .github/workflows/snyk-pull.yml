@@ -9,40 +9,47 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Grant execute permission for gadlew
+      run: chmod +x ./gradlew
+      
+    - name: Install Snyk CLI
+      run: npm install -g snyk
   
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-  
-      - name: Install Snyk CLI
-        run: npm install -g snyk
-  
-      - name: Run Snyk Open Source Test
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --all-projects --json > snyk-deps.json
-  
-      - name: Run Snyk Code Test
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk code test --json > snyk-code.json
-  
-      - name: Format Snyk Results
-        id: snyk_results
-        run: |
-          echo "## Snyk Dependency Vulnerabilities" > snyk-comment.md
-          cat snyk-deps.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
-          echo "" >> snyk-comment.md
-          echo "## Snyk Code Issues" >> snyk-comment.md
-          cat snyk-code.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
-  
-      - name: Post Comment on PR
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            $(cat snyk-comment.md)
+    - name: Run Snyk Open Source Test
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: snyk test --all-projects --json > snyk-deps.json
+
+    - name: Run Snyk Code Test
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: snyk code test --json > snyk-code.json
+
+    - name: Format Snyk Results
+      id: snyk_results
+      run: |
+        echo "## Snyk Dependency Vulnerabilities" > snyk-comment.md
+        cat snyk-deps.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
+        echo "" >> snyk-comment.md
+        echo "## Snyk Code Issues" >> snyk-comment.md
+        cat snyk-code.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
+
+    - name: Post Comment on PR
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          $(cat snyk-comment.md)
+
+
+    
