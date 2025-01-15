@@ -35,15 +35,19 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk code test --json > snyk-code.json
+    
+    # cat snyk-deps.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
+    # cat snyk-code.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
 
     - name: Format Snyk Results
       id: snyk_results
       run: |
         echo "## Snyk Dependency Vulnerabilities" > snyk-comment.md
-        cat snyk-deps.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
+        cat snyk-deps.json
+
         echo "" >> snyk-comment.md
         echo "## Snyk Code Issues" >> snyk-comment.md
-        cat snyk-code.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
+        cat snyk-code.json
 
     - name: Post Comment on PR
       uses: peter-evans/create-or-update-comment@v3
