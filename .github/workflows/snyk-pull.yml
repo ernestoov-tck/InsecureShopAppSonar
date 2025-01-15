@@ -52,7 +52,7 @@ jobs:
           * Fingerprints: \(.fingerprints | to_entries[] | "\(.key): \(.value)" | join(", "))
           * Is Autofixable: \(.properties.isAutofixable)
           "
-        ' input.json >> snyk-comment.md
+        ' snyk.json >> snyk-comment.md
 
 
 
