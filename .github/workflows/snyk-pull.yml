@@ -110,4 +110,3 @@ jobs:
       with:
         name: snyk-comment
         path: snyk-comment.md
-
