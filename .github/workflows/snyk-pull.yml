@@ -35,54 +35,43 @@ jobs:
       run: |
         echo "## Snyk Code Issues" > snyk-comment.md
         jq -r '
+          .runs[].results[] | 
           "
-          ## 🛠️ Snyk Code Issues
+          ### 🔍 Rule Information:
+          | **Property**          | **Value** |
+          |-----------------------|-----------|
+          | **Rule ID**           | [\(.ruleId)](https://example.com/rules/\(.ruleId)) |
+          | **Level**             | \(.level) |
+          | **Priority Score**    | \(.properties.priorityScore) |
+        
           <details>
-          <summary>🔽 **Expand to view all rules**</summary>
+          <summary>📜 **Message** (click to expand)</summary>
         
-          \(.runs[].results[] | 
-            "
-            ### 🔍 Rule Information:
-            | **Property**          | **Value** |
-            |-----------------------|-----------|
-            | **Rule ID**           | [\(.ruleId)](https://example.com/rules/\(.ruleId)) |
-            | **Level**             | \(.level) |
-            | **Priority Score**    | \(.properties.priorityScore) |
+          > \(.message.text)
         
-            <details>
-            <summary>📜 **Message** (click to expand)</summary>
-        
-            > \(.message.text)
-        
-            </details>
-        
-            <details>
-            <summary>📂 **Location** (click to expand)</summary>
-        
-            - **File:** [\(.locations[].physicalLocation.artifactLocation.uri)](https://github.com/your-repo/blob/main/\(.locations[].physicalLocation.artifactLocation.uri)#L\(.locations[].physicalLocation.region.startLine))
-            - **Line:** \(.locations[].physicalLocation.region.startLine)
-        
-            </details>
-        
-            <details>
-            <summary>🛠️ **Details** (click to expand)</summary>
-        
-            - **Fingerprints:**
-              \(.fingerprints | to_entries | map("- `\(.key): \(.value)`") | join("\n      "))
-            - **Autofixable:** \(.properties.isAutofixable)
-        
-            </details>
-        
-            ---
-            " | join("\n")
-          )
           </details>
+        
+          <details>
+          <summary>📂 **Location** (click to expand)</summary>
+        
+          - **File:** [\(.locations[].physicalLocation.artifactLocation.uri)](https://github.com/your-repo/\(.locations[].physicalLocation.artifactLocation.uri))
+          - **Line:** \(.locations[].physicalLocation.region.startLine)
+        
+          </details>
+        
+          <details>
+          <summary>🛠️ **Details** (click to expand)</summary>
+        
+          - **Fingerprints:**
+            \(.fingerprints | to_entries | map("- `\(.key): \(.value)`") | join("\n    "))
+          - **Autofixable:** \(.properties.isAutofixable)
+        
+          </details>
+        
+          ---
           "
         ' snyk.json >> snyk-comment.md
-
-
       #run: snyk code test --json > snyk-code.json
-    
     # cat snyk-deps.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
     # cat snyk-code.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
 
