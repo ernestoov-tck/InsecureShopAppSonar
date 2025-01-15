@@ -57,9 +57,15 @@ jobs:
             body: comment,
           });
 
-    - name: Upload SARIF file as artifact
+    - name: Upload JSON file as artifact
       uses: actions/upload-artifact@v3
       with:
         name: snyk-json
         path: snyk.json
+
+    - name: Upload MD file as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: snyk-comment
+        path: snyk-comment.md
 
