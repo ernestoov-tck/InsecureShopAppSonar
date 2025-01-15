@@ -28,7 +28,7 @@ jobs:
       continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk code test --json-file-output=synk.json
+      run: snyk code test --json-file-output=snyk.json
 
       #run: snyk code test --json > snyk-code.json
     
