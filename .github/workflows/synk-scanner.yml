@@ -36,3 +36,9 @@ jobs:
 
     - name: Check SARIF file existence
       run: ls -l
+
+    - name: Upload SARIF file as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: snyk-sarif
+        path: snyk.sarif
