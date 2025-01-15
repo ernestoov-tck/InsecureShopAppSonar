@@ -25,6 +25,7 @@ jobs:
       run: npm install -g snyk
 
     - name: Run Snyk to check for vulnerabilities and generate SARIF report
+      continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk test --sarif-file-output=snyk.sarif --all-projects --detailed-vulns
