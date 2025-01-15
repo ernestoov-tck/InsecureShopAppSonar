@@ -8,8 +8,4 @@ data class ProductDetail(
     var rating: Int,
     var url: String = "https://www.insecureshopapp.com",
     var qty: Int = 0
-
-
-
-
 )
