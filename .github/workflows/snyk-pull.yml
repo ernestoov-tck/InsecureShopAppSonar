@@ -34,9 +34,27 @@ jobs:
       id: snyk_code_results
       run: |
         echo "## Snyk Code Issues" > snyk-comment.md
-        cat snyk-code.json | jq -r '
-          .runs[].results[] |
-          "* Rule ID: \(.ruleId)\n  - Level: \(.level)\n  - Message: \(.message.text)\n  - Location: \(.locations[].physicalLocation.artifactLocation.uri):\(.locations[].physicalLocation.region.startLine)"' >> snyk-comment.md || true
+        jq -r '
+          .runs[].results[] | 
+          "## Rule Information:
+          * Rule ID: \(.ruleId)
+          * Level: \(.level)
+          * Priority Score: \(.properties.priorityScore)
+        
+        ## Message:
+          \(.message.text)
+        
+        ## Location:
+          File: \(.locations[].physicalLocation.artifactLocation.uri)
+          Line: \(.locations[].physicalLocation.region.startLine)
+        
+        ## Details:
+          * Fingerprints: \(.fingerprints | to_entries[] | "\(.key): \(.value)" | join(", "))
+          * Is Autofixable: \(.properties.isAutofixable)
+          "
+        ' input.json >> snyk-comment.md
+
+
 
 
       #run: snyk code test --json > snyk-code.json
