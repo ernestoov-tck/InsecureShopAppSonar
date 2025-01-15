@@ -24,34 +24,20 @@ jobs:
     - name: Install Snyk CLI
       run: npm install -g snyk
   
-    - name: Run Snyk Open Source Test
-      continue-on-error: true
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk test --all-projects --json > snyk-deps.json
-
     - name: Run Snyk Code Test
       continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      run: snyk code test --json > snyk-code.json
+      run: snyk code test --json-file-output=synk.json
+
+      #run: snyk code test --json > snyk-code.json
     
     # cat snyk-deps.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
     # cat snyk-code.json | jq '.issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
 
-    - name: Format Snyk Results
-      id: snyk_results
-      run: |
-        echo "## Snyk Dependency Vulnerabilities" > snyk-comment.md
-        cat snyk-deps.json | jq -r '.[] | select(.vulnerabilities != null and .vulnerabilities | length > 0) | .vulnerabilities[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md
-        echo "" >> snyk-comment.md
-        echo "## Snyk Code Issues" >> snyk-comment.md
-        cat snyk-code.json | jq -r 'select(.issues != null and .issues | length > 0) | .issues[] | "* \(.title) - Severity: \(.severity)"' >> snyk-comment.md || true
-
-    - name: Post Comment on PR
-      uses: peter-evans/create-or-update-comment@v3
+    - name: Upload SARIF file as artifact
+      uses: actions/upload-artifact@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          $(cat snyk-comment.md)
+        name: snyk-json
+        path: snyk.json
+
