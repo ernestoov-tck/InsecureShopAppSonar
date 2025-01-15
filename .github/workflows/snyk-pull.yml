@@ -40,22 +40,19 @@ jobs:
           * Rule ID: \(.ruleId)
           * Level: \(.level)
           * Priority Score: \(.properties.priorityScore)
-        
-        ## Message:
+          
+          ## Message:
           \(.message.text)
-        
-        ## Location:
+          
+          ## Location:
           File: \(.locations[].physicalLocation.artifactLocation.uri)
           Line: \(.locations[].physicalLocation.region.startLine)
-        
-        ## Details:
-          * Fingerprints: \(.fingerprints | to_entries[] | "\(.key): \(.value)" | join(", "))
+          
+          ## Details:
+          * Fingerprints: \(.fingerprints | to_entries | map("\(.key): \(.value)") | join(", "))
           * Is Autofixable: \(.properties.isAutofixable)
           "
         ' snyk.json >> snyk-comment.md
-
-
-
 
       #run: snyk code test --json > snyk-code.json
     
