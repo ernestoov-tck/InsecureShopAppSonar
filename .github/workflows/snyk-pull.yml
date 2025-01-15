@@ -50,7 +50,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          $(cat snyk-comment.md)
+          $(<snyk-comment.md)
 
     - name: Upload SARIF file as artifact
       uses: actions/upload-artifact@v3
