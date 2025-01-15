@@ -35,4 +35,4 @@ jobs:
         sarif_file: snyk.sarif
 
     - name: Check SARIF file existence
-      run: ls -l snyk.sarif
+      run: ls -l
