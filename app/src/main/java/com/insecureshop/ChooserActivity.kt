@@ -35,7 +35,8 @@ class ChooserActivity : AppCompatActivity() {
                 val directoryBoolean = directory.mkdirs()
             }
             val fileTemp = File(path, original_filename)
-            val fileBoolean = fileTemp.createNewFile()
+            val fileBoolean2 = fileTemp.createNewFile()
+	    val fileBoolean = fileTemp.createNewFile()
             val out = Uri.fromFile(fileTemp)
 
             val inputStream: InputStream? = contentResolver.openInputStream(fileUri)
