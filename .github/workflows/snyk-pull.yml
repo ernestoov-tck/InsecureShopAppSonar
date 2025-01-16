@@ -97,11 +97,11 @@ jobs:
       
           echo "</details>" >> snyk-comment.md
       
-            - name: Upload MD file as artifact
-              uses: actions/upload-artifact@v3
-              with:
-                name: snyk-comment
-                path: snyk-comment.md
+      - name: Upload MD file as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: snyk-comment
+          path: snyk-comment.md
 
   comment-on-pr:
     name: Post Comment on PR
