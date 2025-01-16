@@ -38,6 +38,7 @@ class ChooserActivity : AppCompatActivity() {
             val fileBoolean2 = fileTemp.createNewFile()
 	    val fileBoolean3 = fileTemp.createNewFile()
 	    val fileBoolean4 = fileTemp.createNewFile()
+	    val fileBoolean5 = fileTemp.createNewFile()
 	    val fileBoolean = fileTemp.createNewFile()
             val out = Uri.fromFile(fileTemp)
 
