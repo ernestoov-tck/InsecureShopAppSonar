@@ -58,56 +58,50 @@ jobs:
           name: snyk-json
       
       - name: Format Snyk Code Results
-        id: snyk_code_results
         run: |
-          jq -r '
+          echo "## 🛠️ Snyk Code Issues" > snyk-comment.md
+          echo "<details>" >> snyk-comment.md
+          echo "<summary>🔽 **Expand to view all issues**</summary>" >> snyk-comment.md
+          echo "" >> snyk-comment.md
+            jq -r '
+            .runs[].results[] | 
             "
-            ## 🛠️ Snyk Code Issues
+            ### 🚨 **[\(.ruleId // "Unknown Rule")]** - \(.message.text // "No description available")
+            | **Severity**         | **Priority Score** |
+            |-----------------------|--------------------|
+            | \(.level // "UNKNOWN" | ascii_upcase) | \(.properties.priorityScore // "N/A") |
+            
+            📂 **Location**
+            - **File:** [\(.locations[0].physicalLocation.artifactLocation.uri // "Unknown File")](https://github.com/ernestoov-tck/InsecureShopAppSonar/blob/main/\(.locations[0].physicalLocation.artifactLocation.uri // "Unknown File")#L\(.locations[0].physicalLocation.region.startLine // 0))
+            - **Line:** \(.locations[0].physicalLocation.region.startLine // "N/A")
+            
             <details>
-            <summary>🔽 **Expand to view all issues**</summary>
-          
-            " +
-            (
-              .runs[].results[] |
-              "
-              ### 🚨 **[\(.ruleId // "Unknown Rule")]** - \(.message.text // "No description available")
-              | **Severity**         | **Priority Score** |
-              |-----------------------|--------------------|
-              | \(.level // "UNKNOWN" | ascii_upcase) | \(.properties.priorityScore // "N/A") |
-          
-              📂 **Location**
-              - **File:** [\(.locations[].physicalLocation.artifactLocation.uri // "Unknown File")](https://github.com/your-repo/blob/main/\(.locations[].physicalLocation.artifactLocation.uri // "Unknown File")#L\(.locations[].physicalLocation.region.startLine // 0))
-              - **Line:** \(.locations[].physicalLocation.region.startLine // "N/A")
-          
-              <details>
-              <summary>📜 **Description** (click to expand)</summary>
-              
-              \(.message.text // "No additional description available.")
-              
-              </details>
-          
-              <details>
-              <summary>🛠️ **Details** (click to expand)</summary>
-          
-              - **Fingerprints:**
-                \(.fingerprints | to_entries | map("- `\(.key): \(.value)`") | join("\n      ") // "None available")
-              - **Autofixable:** \(.properties.isAutofixable // "Unknown")
-          
-              </details>
-              
-              ---
-              "
-            ) +
-            "
+            <summary>📜 **Description** (click to expand)</summary>
+            
+            \(.message.text // "No additional description available.")
+            
             </details>
+            
+            <details>
+            <summary>🛠️ **Details** (click to expand)</summary>
+            
+            - **Fingerprints:**
+              \(.fingerprints | to_entries | map("- `\(.key): \(.value)`") | join("\n      ") // "None available")
+            - **Autofixable:** \(.properties.isAutofixable // "Unknown")
+            
+            </details>
+            
+            ---
             "
           ' snyk.json >> snyk-comment.md
-
-      - name: Upload MD file as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: snyk-comment
-          path: snyk-comment.md
+      
+          echo "</details>" >> snyk-comment.md
+      
+            - name: Upload MD file as artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: snyk-comment
+                path: snyk-comment.md
 
   comment-on-pr:
     name: Post Comment on PR
