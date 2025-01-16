@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  security:
+  checkout:
+    name: Checkout and Setup
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -21,6 +22,11 @@ jobs:
     - name: Grant execute permission for gadlew
       run: chmod +x ./gradlew
       
+  snyk-analysis:
+    name: Snyk Analysis
+    runs-on: ubuntu-latest
+    needs: checkout
+    steps:
     - name: Install Snyk CLI
       run: npm install -g snyk
 
@@ -30,6 +36,11 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run: snyk code test --sarif-file-output=snyk.sarif --all-projects --detailed-vulns
 
+  upload-sarif:
+    name: Upload codeql SARIF file
+    runs-on: ubuntu-latest
+    needs: snyk-analysis
+    steps:
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
       with:
