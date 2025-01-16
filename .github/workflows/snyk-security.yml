@@ -3,7 +3,7 @@ name: Example workflow using Snyk
 on:
   push:
     branches:
-      - test3-security
+      - main
 
 jobs:
   security:
