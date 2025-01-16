@@ -60,7 +60,6 @@ jobs:
       - name: Format Snyk Code Results
         id: snyk_code_results
         run: |
-          echo "## 🛠️ Snyk Code Issues" > snyk-comment.md
           jq -r '
             "
             ## 🛠️ Snyk Code Issues
@@ -71,19 +70,19 @@ jobs:
             (
               .runs[].results[] |
               "
-              ### 🚨 **[\(.ruleId)]** - \(.message.text)
+              ### 🚨 **[\(.ruleId // "Unknown Rule")]** - \(.message.text // "No description available")
               | **Severity**         | **Priority Score** |
               |-----------------------|--------------------|
-              | \(.level | ascii_upcase) | \(.properties.priorityScore) |
+              | \(.level // "UNKNOWN" | ascii_upcase) | \(.properties.priorityScore // "N/A") |
           
               📂 **Location**
-              - **File:** [\(.locations[].physicalLocation.artifactLocation.uri)](https://github.com/your-repo/blob/main/\(.locations[].physicalLocation.artifactLocation.uri)#L\(.locations[].physicalLocation.region.startLine))
-              - **Line:** \(.locations[].physicalLocation.region.startLine)
+              - **File:** [\(.locations[].physicalLocation.artifactLocation.uri // "Unknown File")](https://github.com/your-repo/blob/main/\(.locations[].physicalLocation.artifactLocation.uri // "Unknown File")#L\(.locations[].physicalLocation.region.startLine // 0))
+              - **Line:** \(.locations[].physicalLocation.region.startLine // "N/A")
           
               <details>
               <summary>📜 **Description** (click to expand)</summary>
               
-              Unauthenticated input flows into a critical function. Ensure input is validated before passing to `\(.locations[].physicalLocation.region.startLine)`.
+              \(.message.text // "No additional description available.")
               
               </details>
           
@@ -91,8 +90,8 @@ jobs:
               <summary>🛠️ **Details** (click to expand)</summary>
           
               - **Fingerprints:**
-                \(.fingerprints | to_entries | map("- `\(.key): \(.value)`") | join("\n      "))
-              - **Autofixable:** \(.properties.isAutofixable)
+                \(.fingerprints | to_entries | map("- `\(.key): \(.value)`") | join("\n      ") // "None available")
+              - **Autofixable:** \(.properties.isAutofixable // "Unknown")
           
               </details>
               
