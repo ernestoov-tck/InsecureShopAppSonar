@@ -8,6 +8,7 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setResult(0, intent)
         setResult(-1, intent)
         finish()
     }
